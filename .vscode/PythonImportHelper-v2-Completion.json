@@ -25,30 +25,6 @@
         "documentation": {}
     },
     {
-        "label": "create_client",
-        "importPath": "supabase",
-        "description": "supabase",
-        "isExtraImport": true,
-        "detail": "supabase",
-        "documentation": {}
-    },
-    {
-        "label": "Client",
-        "importPath": "supabase",
-        "description": "supabase",
-        "isExtraImport": true,
-        "detail": "supabase",
-        "documentation": {}
-    },
-    {
-        "label": "load_dotenv",
-        "importPath": "dotenv",
-        "description": "dotenv",
-        "isExtraImport": true,
-        "detail": "dotenv",
-        "documentation": {}
-    },
-    {
         "label": "TfidfVectorizer",
         "importPath": "sklearn.feature_extraction.text",
         "description": "sklearn.feature_extraction.text",
@@ -70,15 +46,6 @@
         "description": "database",
         "isExtraImport": true,
         "detail": "database",
-        "documentation": {}
-    },
-    {
-        "label": "data",
-        "kind": 5,
-        "importPath": "src.data_processing",
-        "description": "src.data_processing",
-        "peekOfCode": "data = supabase.table('Job Postings').select(\"job_title\").execute()\nprint(data)\n# if error:\n#     print(\"Error fetching data:\", error)\n# else:\n#     # Access the retrieved data\n#     job_titles = data\n#     # Print the retrieved job titles\n#     for job_title in job_titles:\n#         print(job_title[\"job title\"])",
-        "detail": "src.data_processing",
         "documentation": {}
     },
     {
