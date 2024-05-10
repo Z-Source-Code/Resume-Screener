@@ -25,6 +25,39 @@
         "documentation": {}
     },
     {
+        "label": "load_dotenv",
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "isExtraImport": true,
+        "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "numpy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "numpy",
+        "description": "numpy",
+        "detail": "numpy",
+        "documentation": {}
+    },
+    {
+        "label": "csr_matrix",
+        "importPath": "scipy.sparse",
+        "description": "scipy.sparse",
+        "isExtraImport": true,
+        "detail": "scipy.sparse",
+        "documentation": {}
+    },
+    {
+        "label": "issparse",
+        "importPath": "scipy.sparse",
+        "description": "scipy.sparse",
+        "isExtraImport": true,
+        "detail": "scipy.sparse",
+        "documentation": {}
+    },
+    {
         "label": "TfidfVectorizer",
         "importPath": "sklearn.feature_extraction.text",
         "description": "sklearn.feature_extraction.text",
@@ -41,7 +74,15 @@
         "documentation": {}
     },
     {
-        "label": "create_sb_client",
+        "label": "fetch_job_descriptions",
+        "importPath": "database",
+        "description": "database",
+        "isExtraImport": true,
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "fetch_user_resume",
         "importPath": "database",
         "description": "database",
         "isExtraImport": true,
@@ -53,16 +94,34 @@
         "kind": 2,
         "importPath": "src.database",
         "description": "src.database",
-        "peekOfCode": "def create_sb_client():\n  url: str = os.environ.get(\"SUPABASE_PROJECT_URL\")\n  key: str = os.environ.get(\"SUPABASE_API_KEY\")\n  supabase: Client = create_client(url, key)\n  return supabase",
+        "peekOfCode": "def create_sb_client():\n  url: str = os.environ.get(\"SUPABASE_PROJECT_URL\")\n  key: str = os.environ.get(\"SUPABASE_API_KEY\")\n  supabase: Client = create_client(url, key)\n  return supabase\ndef fetch_job_descriptions():\n  try: \n    supabase = create_sb_client()\n    start = 0\n    limit = 1000",
         "detail": "src.database",
         "documentation": {}
     },
     {
-        "label": "compute_similarity_score",
+        "label": "fetch_job_descriptions",
+        "kind": 2,
+        "importPath": "src.database",
+        "description": "src.database",
+        "peekOfCode": "def fetch_job_descriptions():\n  try: \n    supabase = create_sb_client()\n    start = 0\n    limit = 1000\n    all_job_descriptions = []\n    while True:\n      job_description_response = supabase.table('Job Postings').select('id', 'job_title', 'cleaned_job_description').range(start, start + limit).execute()\n      if job_description_response:\n        data = job_description_response.data ",
+        "detail": "src.database",
+        "documentation": {}
+    },
+    {
+        "label": "fetch_user_resume",
+        "kind": 2,
+        "importPath": "src.database",
+        "description": "src.database",
+        "peekOfCode": "def fetch_user_resume(user_id):\n    supabase = create_sb_client()\n    user_resume_response = supabase.table('User').select('cleaned_resume').eq('id', user_id).limit(1).execute()\n    return user_resume_response.data",
+        "detail": "src.database",
+        "documentation": {}
+    },
+    {
+        "label": "compute_similarity_scores",
         "kind": 2,
         "importPath": "src.recommendations",
         "description": "src.recommendations",
-        "peekOfCode": "def compute_similarity_score(job_descriptions, resume, vectorizer):\n  \"\"\"\n  Function to compute the cosine similarity score between the job descriptions and the resume.\n  Args:\n    job_descriptions (series): job descriptions\n    resume (string): resume\n  \"\"\"\n  text_list = job_descriptions.values.tolist() + [resume]\n  tfidf_matrix = vectorizer.fit_transform(text_list)\n  similarity_scores = cosine_similarity(tfidf_matrix[:-1], tfidf_matrix[-1])",
+        "peekOfCode": "def compute_similarity_scores(job_descriptions, resume, vectorizer):\n  \"\"\"\n  Function to compute the cosine similarity score between the job descriptions and the resume.\n  Args:\n    job_descriptions (list of strings): job descriptions\n    resume (string): resume\n  Returns:\n        similarity_scores: Cosine similarity scores between job descriptions and the resume\n  \"\"\"\n  corpus = job_descriptions + [resume]",
         "detail": "src.recommendations",
         "documentation": {}
     },
@@ -71,7 +130,7 @@
         "kind": 2,
         "importPath": "src.recommendations",
         "description": "src.recommendations",
-        "peekOfCode": "def get_recommendation(n, data_jobs, resume, vectorizer):\n  \"\"\"\n  Function to get the top n job descriptions that are most similar to the resume.\n  Args:\n    n (int): number of job descriptions to return\n    data_jobs (dataframe): dataframe of job descriptions\n  \"\"\"\n  similarity_scores = compute_similarity_score(data_jobs['job_description_clean'], resume, vectorizer)\n  top_n_indices = np.argsort(similarity_scores, axis=0)[-n:].flatten()\n  top_n_jobs = []",
+        "peekOfCode": "def get_recommendation(n, job_data, job_description_corpus, resume, vectorizer):\n    \"\"\"\n    Function to get the top n job descriptions that are most similar to the resume.\n    Args:\n        n (int): number of job descriptions to return\n        job_data (list of dicts): array of job descriptions\n        resume (string): resume\n        vectorizer (TfidfVectorizer): TfidfVectorizer object\n    Returns:\n        top_n_jobs: List of dictionaries containing top n job descriptions and their similarity scores",
         "detail": "src.recommendations",
         "documentation": {}
     },
@@ -80,7 +139,7 @@
         "kind": 2,
         "importPath": "src.recommendations",
         "description": "src.recommendations",
-        "peekOfCode": "def main():\n  n = 10\n  vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 2))\n  top_n_jobs_tfidf = get_recommendation(n, data_jobs, lemmatized_resume, vectorizer)\nif __name__ == '__main__':\n  main()",
+        "peekOfCode": "def main():\n  n = 10\n  vectorizer = TfidfVectorizer(stop_words=None, ngram_range=(1, 2), preprocessor=None, tokenizer=None)\n  jobs_data = fetch_job_descriptions()\n  job_description_corpus = [job['job_description_clean'] for job in jobs_data]\n  vectorizer.fit(job_description_corpus)\n  user_resume = fetch_user_resume('4fca706a-da00-4ed8-81d0-41af305d8ed7')\n  cleaned_resume = user_resume[0]['cleaned_resume']\n  top_n_jobs_tfidf = get_recommendation(n, jobs_data, job_description_corpus, cleaned_resume, vectorizer)\n  for i, job in enumerate(top_n_jobs_tfidf):",
         "detail": "src.recommendations",
         "documentation": {}
     }
