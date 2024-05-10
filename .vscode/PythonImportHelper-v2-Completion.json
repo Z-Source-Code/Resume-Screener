@@ -1,0 +1,120 @@
+[
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "create_client",
+        "importPath": "supabase",
+        "description": "supabase",
+        "isExtraImport": true,
+        "detail": "supabase",
+        "documentation": {}
+    },
+    {
+        "label": "Client",
+        "importPath": "supabase",
+        "description": "supabase",
+        "isExtraImport": true,
+        "detail": "supabase",
+        "documentation": {}
+    },
+    {
+        "label": "create_client",
+        "importPath": "supabase",
+        "description": "supabase",
+        "isExtraImport": true,
+        "detail": "supabase",
+        "documentation": {}
+    },
+    {
+        "label": "Client",
+        "importPath": "supabase",
+        "description": "supabase",
+        "isExtraImport": true,
+        "detail": "supabase",
+        "documentation": {}
+    },
+    {
+        "label": "load_dotenv",
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "isExtraImport": true,
+        "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "TfidfVectorizer",
+        "importPath": "sklearn.feature_extraction.text",
+        "description": "sklearn.feature_extraction.text",
+        "isExtraImport": true,
+        "detail": "sklearn.feature_extraction.text",
+        "documentation": {}
+    },
+    {
+        "label": "cosine_similarity",
+        "importPath": "sklearn.metrics.pairwise",
+        "description": "sklearn.metrics.pairwise",
+        "isExtraImport": true,
+        "detail": "sklearn.metrics.pairwise",
+        "documentation": {}
+    },
+    {
+        "label": "create_sb_client",
+        "importPath": "database",
+        "description": "database",
+        "isExtraImport": true,
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "data",
+        "kind": 5,
+        "importPath": "src.data_processing",
+        "description": "src.data_processing",
+        "peekOfCode": "data = supabase.table('Job Postings').select(\"job_title\").execute()\nprint(data)\n# if error:\n#     print(\"Error fetching data:\", error)\n# else:\n#     # Access the retrieved data\n#     job_titles = data\n#     # Print the retrieved job titles\n#     for job_title in job_titles:\n#         print(job_title[\"job title\"])",
+        "detail": "src.data_processing",
+        "documentation": {}
+    },
+    {
+        "label": "create_sb_client",
+        "kind": 2,
+        "importPath": "src.database",
+        "description": "src.database",
+        "peekOfCode": "def create_sb_client():\n  url: str = os.environ.get(\"SUPABASE_PROJECT_URL\")\n  key: str = os.environ.get(\"SUPABASE_API_KEY\")\n  supabase: Client = create_client(url, key)\n  return supabase",
+        "detail": "src.database",
+        "documentation": {}
+    },
+    {
+        "label": "compute_similarity_score",
+        "kind": 2,
+        "importPath": "src.recommendations",
+        "description": "src.recommendations",
+        "peekOfCode": "def compute_similarity_score(job_descriptions, resume, vectorizer):\n  \"\"\"\n  Function to compute the cosine similarity score between the job descriptions and the resume.\n  Args:\n    job_descriptions (series): job descriptions\n    resume (string): resume\n  \"\"\"\n  text_list = job_descriptions.values.tolist() + [resume]\n  tfidf_matrix = vectorizer.fit_transform(text_list)\n  similarity_scores = cosine_similarity(tfidf_matrix[:-1], tfidf_matrix[-1])",
+        "detail": "src.recommendations",
+        "documentation": {}
+    },
+    {
+        "label": "get_recommendation",
+        "kind": 2,
+        "importPath": "src.recommendations",
+        "description": "src.recommendations",
+        "peekOfCode": "def get_recommendation(n, data_jobs, resume, vectorizer):\n  \"\"\"\n  Function to get the top n job descriptions that are most similar to the resume.\n  Args:\n    n (int): number of job descriptions to return\n    data_jobs (dataframe): dataframe of job descriptions\n  \"\"\"\n  similarity_scores = compute_similarity_score(data_jobs['job_description_clean'], resume, vectorizer)\n  top_n_indices = np.argsort(similarity_scores, axis=0)[-n:].flatten()\n  top_n_jobs = []",
+        "detail": "src.recommendations",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "src.recommendations",
+        "description": "src.recommendations",
+        "peekOfCode": "def main():\n  n = 10\n  vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 2))\n  top_n_jobs_tfidf = get_recommendation(n, data_jobs, lemmatized_resume, vectorizer)\nif __name__ == '__main__':\n  main()",
+        "detail": "src.recommendations",
+        "documentation": {}
+    }
+]
