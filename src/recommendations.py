@@ -4,7 +4,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity 
 from database import fetch_job_descriptions, fetch_user_resume
 
-
 def compute_similarity_scores(job_descriptions, resume, vectorizer):
   """
   Function to compute the cosine similarity score between the job descriptions and the resume.

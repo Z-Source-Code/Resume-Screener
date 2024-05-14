@@ -40,9 +40,12 @@ def fetch_job_descriptions():
     print('An error occurred:', e)
 
 def fetch_user_resume(user_id):
+  try:
     supabase = create_sb_client()
     user_resume_response = supabase.table('User').select('cleaned_resume').eq('id', user_id).limit(1).execute()
     return user_resume_response.data
+  except Exception as e:
+    print('An error occurred:', e)
 
 
 

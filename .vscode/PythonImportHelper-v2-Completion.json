@@ -112,7 +112,7 @@
         "kind": 2,
         "importPath": "src.database",
         "description": "src.database",
-        "peekOfCode": "def fetch_user_resume(user_id):\n    supabase = create_sb_client()\n    user_resume_response = supabase.table('User').select('cleaned_resume').eq('id', user_id).limit(1).execute()\n    return user_resume_response.data",
+        "peekOfCode": "def fetch_user_resume(user_id):\n  try:\n    supabase = create_sb_client()\n    user_resume_response = supabase.table('User').select('cleaned_resume').eq('id', user_id).limit(1).execute()\n    return user_resume_response.data\n  except Exception as e:\n    print('An error occurred:', e)",
         "detail": "src.database",
         "documentation": {}
     },
