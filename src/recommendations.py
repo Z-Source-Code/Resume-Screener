@@ -1,9 +1,8 @@
 import numpy as np
 from scipy.sparse import csr_matrix, issparse
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity 
 from database import fetch_job_descriptions, fetch_user_resume
-
 
 def compute_similarity_scores(job_descriptions, resume, vectorizer):
   """
@@ -22,7 +21,7 @@ def compute_similarity_scores(job_descriptions, resume, vectorizer):
   
   return similarity_scores
 
-def get_recommendation(n, job_data, job_description_corpus, resume, vectorizer):
+def get_recommendation(n, job_data, job_description_corpus, resume, vectorizer, current_skill_level):
     """
     Function to get the top n job descriptions that are most similar to the resume.
     Args:
@@ -41,13 +40,20 @@ def get_recommendation(n, job_data, job_description_corpus, resume, vectorizer):
         job_title = job_data[index]['job_title']
         job_description = job_data[index]['job_description_clean']
         similarity_score = similarity_scores[index][0]
-        top_n_jobs.append({'job_title': job_title, 'job_description_clean': job_description, 'similarity_score': similarity_score})
+        seniority_level = job_data[index]['seniority_level']
 
+        for skill_level in current_skill_level:
+          if seniority_level == skill_level:
+            top_n_jobs.append({'job_title': job_title, 
+                                'job_description_clean': job_description,
+                                'similarity_score': similarity_score,
+                                'seniority_level': seniority_level})
+        
     return top_n_jobs
 
 def main():
   n = 10
-  vectorizer = TfidfVectorizer(stop_words=None, ngram_range=(1, 2), preprocessor=None, tokenizer=None)
+  vectorizer = TfidfVectorizer(stop_words=None, ngram_range=(1, 3), preprocessor=None, tokenizer=None)
   jobs_data = fetch_job_descriptions()
   
   job_description_corpus = [job['job_description_clean'] for job in jobs_data]
@@ -56,9 +62,12 @@ def main():
   user_resume = fetch_user_resume('4fca706a-da00-4ed8-81d0-41af305d8ed7')
   cleaned_resume = user_resume[0]['cleaned_resume']
   
-  top_n_jobs_tfidf = get_recommendation(n, jobs_data, job_description_corpus, cleaned_resume, vectorizer)
+  
+  current_skill_level = ['Internship', 'Entry level', 'Mid-Senior level', 'Associate', None]
+  top_n_jobs_tfidf = get_recommendation(n, jobs_data, job_description_corpus, cleaned_resume, vectorizer, current_skill_level)
+  
   for i, job in enumerate(top_n_jobs_tfidf):
-        print(f"Rank {i+1}: {job['job_title']} - Similarity Score: {job['similarity_score']}")
+        print(f"Rank {i+1}: {job['job_title']} - Similarity Score: {job['similarity_score']} - {job['seniority_level']}")
 
 
 if __name__ == '__main__':
