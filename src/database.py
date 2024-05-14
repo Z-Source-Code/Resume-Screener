@@ -18,14 +18,22 @@ def fetch_job_descriptions():
     all_job_descriptions = []
     
     while True:
-      job_description_response = supabase.table('Job Postings').select('id', 'job_title', 'cleaned_job_description').range(start, start + limit).execute()
+      job_description_response = supabase.table('Job Postings') \
+      .select('id', 'job_title', 'cleaned_job_description', 'formatted_experience_level') \
+      .range(start, start + limit) \
+      .execute()
+      
       if job_description_response:
         data = job_description_response.data 
         for row in data:
           identifier = row['id']
           job_title = row['job_title']
           job_description = row['cleaned_job_description']
-          all_job_descriptions.append({'id': identifier, 'job_title': job_title, 'job_description_clean': job_description})
+          seniority_level = row['formatted_experience_level']
+          all_job_descriptions.append({'id': identifier, 
+                                       'job_title': job_title, 
+                                       'job_description_clean': job_description, 
+                                       'seniority_level': seniority_level})
       
         start += limit 
         if len(data) < limit:

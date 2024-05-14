@@ -66,6 +66,14 @@
         "documentation": {}
     },
     {
+        "label": "CountVectorizer",
+        "importPath": "sklearn.feature_extraction.text",
+        "description": "sklearn.feature_extraction.text",
+        "isExtraImport": true,
+        "detail": "sklearn.feature_extraction.text",
+        "documentation": {}
+    },
+    {
         "label": "cosine_similarity",
         "importPath": "sklearn.metrics.pairwise",
         "description": "sklearn.metrics.pairwise",
@@ -103,7 +111,7 @@
         "kind": 2,
         "importPath": "src.database",
         "description": "src.database",
-        "peekOfCode": "def fetch_job_descriptions():\n  try: \n    supabase = create_sb_client()\n    start = 0\n    limit = 1000\n    all_job_descriptions = []\n    while True:\n      job_description_response = supabase.table('Job Postings').select('id', 'job_title', 'cleaned_job_description').range(start, start + limit).execute()\n      if job_description_response:\n        data = job_description_response.data ",
+        "peekOfCode": "def fetch_job_descriptions():\n  try: \n    supabase = create_sb_client()\n    start = 0\n    limit = 1000\n    all_job_descriptions = []\n    while True:\n      job_description_response = supabase.table('Job Postings') \\\n      .select('id', 'job_title', 'cleaned_job_description', 'formatted_experience_level') \\\n      .range(start, start + limit) \\",
         "detail": "src.database",
         "documentation": {}
     },
@@ -130,7 +138,7 @@
         "kind": 2,
         "importPath": "src.recommendations",
         "description": "src.recommendations",
-        "peekOfCode": "def get_recommendation(n, job_data, job_description_corpus, resume, vectorizer):\n    \"\"\"\n    Function to get the top n job descriptions that are most similar to the resume.\n    Args:\n        n (int): number of job descriptions to return\n        job_data (list of dicts): array of job descriptions\n        resume (string): resume\n        vectorizer (TfidfVectorizer): TfidfVectorizer object\n    Returns:\n        top_n_jobs: List of dictionaries containing top n job descriptions and their similarity scores",
+        "peekOfCode": "def get_recommendation(n, job_data, job_description_corpus, resume, vectorizer, current_skill_level):\n    \"\"\"\n    Function to get the top n job descriptions that are most similar to the resume.\n    Args:\n        n (int): number of job descriptions to return\n        job_data (list of dicts): array of job descriptions\n        resume (string): resume\n        vectorizer (TfidfVectorizer): TfidfVectorizer object\n    Returns:\n        top_n_jobs: List of dictionaries containing top n job descriptions and their similarity scores",
         "detail": "src.recommendations",
         "documentation": {}
     },
@@ -139,7 +147,7 @@
         "kind": 2,
         "importPath": "src.recommendations",
         "description": "src.recommendations",
-        "peekOfCode": "def main():\n  n = 10\n  vectorizer = TfidfVectorizer(stop_words=None, ngram_range=(1, 2), preprocessor=None, tokenizer=None)\n  jobs_data = fetch_job_descriptions()\n  job_description_corpus = [job['job_description_clean'] for job in jobs_data]\n  vectorizer.fit(job_description_corpus)\n  user_resume = fetch_user_resume('4fca706a-da00-4ed8-81d0-41af305d8ed7')\n  cleaned_resume = user_resume[0]['cleaned_resume']\n  top_n_jobs_tfidf = get_recommendation(n, jobs_data, job_description_corpus, cleaned_resume, vectorizer)\n  for i, job in enumerate(top_n_jobs_tfidf):",
+        "peekOfCode": "def main():\n  n = 10\n  vectorizer = TfidfVectorizer(stop_words=None, ngram_range=(1, 3), preprocessor=None, tokenizer=None)\n  jobs_data = fetch_job_descriptions()\n  job_description_corpus = [job['job_description_clean'] for job in jobs_data]\n  vectorizer.fit(job_description_corpus)\n  user_resume = fetch_user_resume('4fca706a-da00-4ed8-81d0-41af305d8ed7')\n  cleaned_resume = user_resume[0]['cleaned_resume']\n  current_skill_level = ['Internship', 'Entry level', 'Mid-Senior level', 'Associate', None]\n  top_n_jobs_tfidf = get_recommendation(n, jobs_data, job_description_corpus, cleaned_resume, vectorizer, current_skill_level)",
         "detail": "src.recommendations",
         "documentation": {}
     }
