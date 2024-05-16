@@ -1,6 +1,6 @@
 import numpy as np
-from scipy.sparse import csr_matrix, issparse
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+from scipy.sparse import csr_matrix
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity 
 from database import fetch_job_descriptions, fetch_user_resume
 
