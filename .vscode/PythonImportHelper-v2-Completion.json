@@ -33,6 +33,15 @@
         "documentation": {}
     },
     {
+        "label": "pymupdf",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pymupdf",
+        "description": "pymupdf",
+        "detail": "pymupdf",
+        "documentation": {}
+    },
+    {
         "label": "numpy",
         "kind": 6,
         "isExtraImport": true,
@@ -82,6 +91,114 @@
         "documentation": {}
     },
     {
+        "label": "re",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "re",
+        "description": "re",
+        "detail": "re",
+        "documentation": {}
+    },
+    {
+        "label": "nltk",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "nltk",
+        "description": "nltk",
+        "detail": "nltk",
+        "documentation": {}
+    },
+    {
+        "label": "pos_tag",
+        "importPath": "nltk",
+        "description": "nltk",
+        "isExtraImport": true,
+        "detail": "nltk",
+        "documentation": {}
+    },
+    {
+        "label": "stopwords",
+        "importPath": "nltk.corpus",
+        "description": "nltk.corpus",
+        "isExtraImport": true,
+        "detail": "nltk.corpus",
+        "documentation": {}
+    },
+    {
+        "label": "wordnet",
+        "importPath": "nltk.corpus",
+        "description": "nltk.corpus",
+        "isExtraImport": true,
+        "detail": "nltk.corpus",
+        "documentation": {}
+    },
+    {
+        "label": "word_tokenize",
+        "importPath": "nltk.tokenize",
+        "description": "nltk.tokenize",
+        "isExtraImport": true,
+        "detail": "nltk.tokenize",
+        "documentation": {}
+    },
+    {
+        "label": "WordNetLemmatizer",
+        "importPath": "nltk.stem",
+        "description": "nltk.stem",
+        "isExtraImport": true,
+        "detail": "nltk.stem",
+        "documentation": {}
+    },
+    {
+        "label": "create_sb_client",
+        "importPath": "src.database",
+        "description": "src.database",
+        "isExtraImport": true,
+        "detail": "src.database",
+        "documentation": {}
+    },
+    {
+        "label": "upload_resume_to_supabase",
+        "importPath": "src.database",
+        "description": "src.database",
+        "isExtraImport": true,
+        "detail": "src.database",
+        "documentation": {}
+    },
+    {
+        "label": "bentoml",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "bentoml",
+        "description": "bentoml",
+        "detail": "bentoml",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "clean_and_lemmatize_resume",
+        "importPath": "src.resume_processing",
+        "description": "src.resume_processing",
+        "isExtraImport": true,
+        "detail": "src.resume_processing",
+        "documentation": {}
+    },
+    {
+        "label": "threading",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "threading",
+        "description": "threading",
+        "detail": "threading",
+        "documentation": {}
+    },
+    {
         "label": "create_sb_client",
         "kind": 2,
         "importPath": "src.database",
@@ -100,11 +217,29 @@
         "documentation": {}
     },
     {
-        "label": "fetch_user_resume",
+        "label": "fetch_raw_resume",
         "kind": 2,
         "importPath": "src.database",
         "description": "src.database",
-        "peekOfCode": "def fetch_user_resume(user_id):\n  try:\n    supabase = create_sb_client()\n    user_resume_response = supabase.table('User').select('cleaned_resume').eq('id', user_id).limit(1).execute()\n    return user_resume_response.data\n  except Exception as e:\n    print('An error occurred:', e)",
+        "peekOfCode": "def fetch_raw_resume(user_id: str):\n  try:\n    supabase = create_sb_client()\n    user_resume_response = supabase.table('Resumes').select('resume_raw').eq('id', user_id).limit(1).execute()\n    return user_resume_response.data\n  except Exception as e:\n    print('An error occurred:', e)\ndef fetch_clean_resume(user_id):\n  try:\n    supabase = create_sb_client()",
+        "detail": "src.database",
+        "documentation": {}
+    },
+    {
+        "label": "fetch_clean_resume",
+        "kind": 2,
+        "importPath": "src.database",
+        "description": "src.database",
+        "peekOfCode": "def fetch_clean_resume(user_id):\n  try:\n    supabase = create_sb_client()\n    user_resume_response = supabase.table('Resumes').select('resume_clean').eq('id', user_id).limit(1).execute()\n    return user_resume_response.data\n  except Exception as e:\n    print('An error occurred:', e)\ndef upload_resume_to_supabase(resume_data: str, user_id: str, column_name: str) -> None:\n    \"\"\"\n    Uploads a resume file to Supabase for a specific user. If a row with the given user ID",
+        "detail": "src.database",
+        "documentation": {}
+    },
+    {
+        "label": "upload_resume_to_supabase",
+        "kind": 2,
+        "importPath": "src.database",
+        "description": "src.database",
+        "peekOfCode": "def upload_resume_to_supabase(resume_data: str, user_id: str, column_name: str) -> None:\n    \"\"\"\n    Uploads a resume file to Supabase for a specific user. If a row with the given user ID\n    already exists in the table, updates the specified column for that row.\n    Args:\n        resume_data (str): The resume data to upload.\n        user_id (str): The ID of the user the resume belongs to.\n        column_name (str): The name of the column to update.\n    Returns:\n        str: The ID of the row in the table.",
         "detail": "src.database",
         "documentation": {}
     },
@@ -133,6 +268,33 @@
         "description": "src.recommendations",
         "peekOfCode": "def main():\n  n = 10\n  vectorizer = TfidfVectorizer(stop_words=None, ngram_range=(1, 3), preprocessor=None, tokenizer=None)\n  jobs_data = fetch_job_descriptions()\n  job_description_corpus = [job['job_description_clean'] for job in jobs_data]\n  vectorizer.fit(job_description_corpus)\n  user_resume = fetch_user_resume('4fca706a-da00-4ed8-81d0-41af305d8ed7')\n  cleaned_resume = user_resume[0]['cleaned_resume']\n  current_skill_level = ['Internship', 'Entry level', 'Mid-Senior level', 'Associate', None]\n  top_n_jobs_tfidf = get_recommendation(n, jobs_data, job_description_corpus, cleaned_resume, vectorizer, current_skill_level)",
         "detail": "src.recommendations",
+        "documentation": {}
+    },
+    {
+        "label": "nltk_to_wordnet_pos",
+        "kind": 2,
+        "importPath": "src.resume_processing",
+        "description": "src.resume_processing",
+        "peekOfCode": "def nltk_to_wordnet_pos(nltk_tag):\n    \"\"\"\n    Descr: Convert NLTK POS tag to WordNet POS tag.\n    Input: nltk_tag\n    Output: wordnet_pos\n    \"\"\"\n    if nltk_tag.startswith('J'):\n        return wordnet.ADJ\n    elif nltk_tag.startswith('V'):\n        return wordnet.VERB",
+        "detail": "src.resume_processing",
+        "documentation": {}
+    },
+    {
+        "label": "clean_and_lemmatize_resume",
+        "kind": 2,
+        "importPath": "src.resume_processing",
+        "description": "src.resume_processing",
+        "peekOfCode": "def clean_and_lemmatize_resume(resume_data: str):\n  \"\"\"\n  Descr: Clean text data by removing punctuation, stopwords, and converting to lowercase.\n          Additionally, perform lemmatization on the cleaned text.\n  Input: data (text)\n  Output: cleaned and lemmatized text\n  \"\"\"\n  stop_words = set(stopwords.words('english'))\n  lemmatizer = WordNetLemmatizer() \n  clean_and_lemmatized_data  = []",
+        "detail": "src.resume_processing",
+        "documentation": {}
+    },
+    {
+        "label": "JobRecommender",
+        "kind": 6,
+        "importPath": "service",
+        "description": "service",
+        "peekOfCode": "class JobRecommender:\n  @bentoml.api\n  def recommendations(self, input: Path) -> str:\n    user_id = '4fca706a-da00-4ed8-81d0-41af305d8ed7'\n    with pymupdf.open(input) as doc:\n        raw_resume_text = chr(12).join([page.get_text() for page in doc])\n    def upload_raw_resume():\n      upload_resume_to_supabase(raw_resume_text, user_id, \"resume_raw\")\n    def clean_and_store_resume():\n      cleaned_resume_text = clean_and_lemmatize_resume(raw_resume_text)",
+        "detail": "service",
         "documentation": {}
     }
 ]

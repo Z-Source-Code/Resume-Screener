@@ -1,6 +1,7 @@
 import os
 from supabase import create_client, Client
 from dotenv import load_dotenv 
+import pymupdf
 
 load_dotenv()
 
@@ -47,13 +48,49 @@ def fetch_job_descriptions():
   except Exception as e:
     print('An error occurred:', e)
 
-def fetch_user_resume(user_id):
+def fetch_raw_resume(user_id: str):
   try:
     supabase = create_sb_client()
-    user_resume_response = supabase.table('User').select('cleaned_resume').eq('id', user_id).limit(1).execute()
+    user_resume_response = supabase.table('Resumes').select('resume_raw').eq('id', user_id).limit(1).execute()
     return user_resume_response.data
   except Exception as e:
     print('An error occurred:', e)
+    
+def fetch_clean_resume(user_id):
+  try:
+    supabase = create_sb_client()
+    user_resume_response = supabase.table('Resumes').select('resume_clean').eq('id', user_id).limit(1).execute()
+    return user_resume_response.data
+  except Exception as e:
+    print('An error occurred:', e)
+  
+def upload_resume_to_supabase(resume_data: str, user_id: str, column_name: str) -> None:
+    """
+    Uploads a resume file to Supabase for a specific user. If a row with the given user ID
+    already exists in the table, updates the specified column for that row.
+
+    Args:
+        resume_data (str): The resume data to upload.
+        user_id (str): The ID of the user the resume belongs to.
+        column_name (str): The name of the column to update.
+
+    Returns:
+        str: The ID of the row in the table.
+    """
+    try:
+        supabase = create_sb_client()
+        data, count = supabase.table('Resumes') \
+            .upsert({'user_id': user_id, column_name: resume_data}, on_conflict='user_id') \
+            .execute()
+
+        print(f"Resume uploaded successfully for user: {user_id}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+
+
+      
+
 
 
 
