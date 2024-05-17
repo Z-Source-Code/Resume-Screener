@@ -55,34 +55,3 @@ def clean_and_lemmatize_resume(resume_data: str):
       lemmatized_word = lemmatizer.lemmatize(word, pos=wn_tag)
     lemmatized_resume.append(lemmatized_word)  
   return ' '.join(lemmatized_resume)  
-
-# def load_cleaned_data_to_supabase(table_name: str, column_name: str, cleaned_data: list[dict]):
-#   try:
-#     supabase = create_sb_client()
-    
-#     for item in cleaned_data:
-#       identifier = item['id']
-#       cleaned_col_data = item[column_name]
-#       data, count = supabase.table(table_name).update({column_name: cleaned_col_data}).eq("id", identifier).execute()
-      
-#     print("Cleaned job descriptions loaded to Supabase successfully.")
-#   except Exception as e:
-#       print("An error occurred:", e)
-
-# def main():
-#   nltk.download('punkt')
-#   nltk.download('stopwords')
-#   nltk.download('wordnet')
-  
-#   table = 'User'
-#   column = 'resume'
-#   cleaned_column = 'cleaned_resume'
-  
-#   data = extract_data_from_supabase(table, column)
-#   print('data', data)
-#   clean_and_lemmatized_data = clean_and_lemmatize(data, column, cleaned_column)
-#   print('Total cleaned job descriptions:', len(clean_and_lemmatized_data)) 
-#   load_cleaned_data_to_supabase(table, cleaned_column, clean_and_lemmatized_data)
-      
-# if __name__ == '__main__':
-#   main()

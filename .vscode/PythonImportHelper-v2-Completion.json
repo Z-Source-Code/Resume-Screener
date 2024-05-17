@@ -76,18 +76,26 @@
     },
     {
         "label": "fetch_job_descriptions",
-        "importPath": "database",
-        "description": "database",
+        "importPath": "src.database",
+        "description": "src.database",
         "isExtraImport": true,
-        "detail": "database",
+        "detail": "src.database",
         "documentation": {}
     },
     {
-        "label": "fetch_user_resume",
-        "importPath": "database",
-        "description": "database",
+        "label": "create_sb_client",
+        "importPath": "src.database",
+        "description": "src.database",
         "isExtraImport": true,
-        "detail": "database",
+        "detail": "src.database",
+        "documentation": {}
+    },
+    {
+        "label": "upload_resume_to_supabase",
+        "importPath": "src.database",
+        "description": "src.database",
+        "isExtraImport": true,
+        "detail": "src.database",
         "documentation": {}
     },
     {
@@ -149,19 +157,12 @@
         "documentation": {}
     },
     {
-        "label": "create_sb_client",
-        "importPath": "src.database",
-        "description": "src.database",
+        "label": "threading",
+        "kind": 6,
         "isExtraImport": true,
-        "detail": "src.database",
-        "documentation": {}
-    },
-    {
-        "label": "upload_resume_to_supabase",
-        "importPath": "src.database",
-        "description": "src.database",
-        "isExtraImport": true,
-        "detail": "src.database",
+        "importPath": "threading",
+        "description": "threading",
+        "detail": "threading",
         "documentation": {}
     },
     {
@@ -190,12 +191,11 @@
         "documentation": {}
     },
     {
-        "label": "threading",
-        "kind": 6,
+        "label": "run_recommendation_engine",
+        "importPath": "src.recommendations",
+        "description": "src.recommendations",
         "isExtraImport": true,
-        "importPath": "threading",
-        "description": "threading",
-        "detail": "threading",
+        "detail": "src.recommendations",
         "documentation": {}
     },
     {
@@ -244,11 +244,11 @@
         "documentation": {}
     },
     {
-        "label": "compute_similarity_scores",
+        "label": "calculate_similarity_scores",
         "kind": 2,
         "importPath": "src.recommendations",
         "description": "src.recommendations",
-        "peekOfCode": "def compute_similarity_scores(job_descriptions, resume, vectorizer):\n  \"\"\"\n  Function to compute the cosine similarity score between the job descriptions and the resume.\n  Args:\n    job_descriptions (list of strings): job descriptions\n    resume (string): resume\n  Returns:\n        similarity_scores: Cosine similarity scores between job descriptions and the resume\n  \"\"\"\n  corpus = job_descriptions + [resume]",
+        "peekOfCode": "def calculate_similarity_scores(job_descriptions, resume, vectorizer):\n  \"\"\"\n  Function to compute the cosine similarity score between the job descriptions and the resume.\n  Args:\n    job_descriptions (list of strings): job descriptions\n    resume (string): resume\n  Returns:\n        similarity_scores: Cosine similarity scores between job descriptions and the resume\n  \"\"\"\n  corpus = job_descriptions + [resume]",
         "detail": "src.recommendations",
         "documentation": {}
     },
@@ -262,11 +262,11 @@
         "documentation": {}
     },
     {
-        "label": "main",
+        "label": "run_recommendation_engine",
         "kind": 2,
         "importPath": "src.recommendations",
         "description": "src.recommendations",
-        "peekOfCode": "def main():\n  n = 10\n  vectorizer = TfidfVectorizer(stop_words=None, ngram_range=(1, 3), preprocessor=None, tokenizer=None)\n  jobs_data = fetch_job_descriptions()\n  job_description_corpus = [job['job_description_clean'] for job in jobs_data]\n  vectorizer.fit(job_description_corpus)\n  user_resume = fetch_user_resume('4fca706a-da00-4ed8-81d0-41af305d8ed7')\n  cleaned_resume = user_resume[0]['cleaned_resume']\n  current_skill_level = ['Internship', 'Entry level', 'Mid-Senior level', 'Associate', None]\n  top_n_jobs_tfidf = get_recommendation(n, jobs_data, job_description_corpus, cleaned_resume, vectorizer, current_skill_level)",
+        "peekOfCode": "def run_recommendation_engine(resume):\n  n = 10\n  vectorizer = TfidfVectorizer(stop_words=None, ngram_range=(1, 3), preprocessor=None, tokenizer=None)\n  jobs_data = fetch_job_descriptions()\n  job_description_corpus = [job['job_description_clean'] for job in jobs_data]\n  vectorizer.fit(job_description_corpus)\n  # cleaned_resume = resume[0]['cleaned_resume']\n  current_skill_level = ['Internship', 'Entry level', 'Mid-Senior level', 'Associate', None]\n  top_n_jobs_tfidf = get_recommendation(n, jobs_data, job_description_corpus, resume, vectorizer, current_skill_level)\n  return top_n_jobs_tfidf",
         "detail": "src.recommendations",
         "documentation": {}
     },
@@ -293,7 +293,7 @@
         "kind": 6,
         "importPath": "service",
         "description": "service",
-        "peekOfCode": "class JobRecommender:\n  @bentoml.api\n  def recommendations(self, input: Path) -> str:\n    user_id = '4fca706a-da00-4ed8-81d0-41af305d8ed7'\n    with pymupdf.open(input) as doc:\n        raw_resume_text = chr(12).join([page.get_text() for page in doc])\n    def upload_raw_resume():\n      upload_resume_to_supabase(raw_resume_text, user_id, \"resume_raw\")\n    def clean_and_store_resume():\n      cleaned_resume_text = clean_and_lemmatize_resume(raw_resume_text)",
+        "peekOfCode": "class JobRecommender:\n  @bentoml.api\n  def recommendations(self, input: Path) -> list[dict]:\n    user_id = '4fca706a-da00-4ed8-81d0-41af305d8ed7'\n    with pymupdf.open(input) as doc:\n        raw_resume_text = chr(12).join([page.get_text() for page in doc])\n    job_recommendations = []\n    def upload_raw_resume():\n      upload_resume_to_supabase(raw_resume_text, user_id, \"resume_raw\")\n    def clean_and_store_resume():",
         "detail": "service",
         "documentation": {}
     }
